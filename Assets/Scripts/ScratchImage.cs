@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// ¿ÉÒÔ¹Î¿ªµÄÍ¼Ïñ
@@ -313,11 +314,18 @@ public class ScratchImage : MonoBehaviour
         if (localPt.x < 0 || localPt.y < 0 || localPt.y >= _maskSize.x || localPt.y >= _maskSize.y)
             return;
 
+        var posX = Random.Range(0, _maskSize.x);
+        var posY = Random.Range(0, _maskSize.y);
+        var beginPos = new Vector2(posX, posY);
+        posX = Random.Range(0, _maskSize.x);
+        posY = Random.Range(0, _maskSize.y);
+        var end = new Vector2(posX, posY);
+        
         switch (mouseStatus)
         {
             case 1:
-                _beginPos = localPt;
-                _lastPoint = localPt;
+                _beginPos = beginPos;
+                _lastPoint = _endPos;
                 break;
             case 2:
                 if (Vector2.Distance(localPt, _lastPoint) > moveThreshhold)
