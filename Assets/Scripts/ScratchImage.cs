@@ -12,71 +12,70 @@ using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 /// <summary>
-/// 可以刮开的图像
+/// 驴脡脪脭鹿脦驴陋碌脛脥录脧帽
 /// </summary>
 public class ScratchImage : MonoBehaviour
 {
     public struct StatData
     {
-        public float    fillPercent;  // 填充百分比（非0值）
-        public float    avgVal;       // 平均值
+        public float    fillPercent;  // 脤卯鲁盲掳脵路脰卤脠拢篓路脟0脰碌拢漏
+        public float    avgVal;       // 脝陆戮霉脰碌
     }
 
     /// <summary>
-    /// 直方图桶的数量，必须与shader中定义的一致, 且小于256
+    /// 脰卤路陆脥录脥掳碌脛脢媒脕驴拢卢卤脴脨毛脫毛shader脰脨露篓脪氓碌脛脪禄脰脗, 脟脪脨隆脫脷256
     /// </summary>
     public const int HISTOGRAM_BINS = 128;
     /// <summary>
-    /// 用来控制透明度的RT相比Image尺寸的比例，值越小性能越高，但是精度和效果也越差
+    /// 脫脙脌麓驴脴脰脝脥赂脙梅露脠碌脛RT脧脿卤脠Image鲁脽麓莽碌脛卤脠脌媒拢卢脰碌脭陆脨隆脨脭脛脺脭陆赂脽拢卢碌芦脢脟戮芦露脠潞脥脨搂鹿没脪虏脭陆虏卯
     /// </summary>
     public const float ALPHA_RT_SCALE = 0.4f;
     /// <summary>
-    /// 每一批次的实例数量上限（太多有些设备会有异常）
+    /// 脙驴脪禄脜煤麓脦碌脛脢碌脌媒脢媒脕驴脡脧脧脼拢篓脤芦露脿脫脨脨漏脡猫卤赂禄谩脫脨脪矛鲁拢拢漏
     /// </summary>
     public const int INSTANCE_COUNT_PER_BATCH = 200;
 
     public Camera uiCamera;
     /// <summary>
-    /// 蒙版贴图
+    /// 脙脡掳忙脤霉脥录
     /// </summary>
     public Image maskImage;
     /// <summary>
-    /// 笔刷贴图
+    /// 卤脢脣垄脤霉脥录
     /// </summary>
     public Texture2D brushTex;
 
     /// <summary>
-    /// 笔刷尺寸
+    /// 卤脢脣垄鲁脽麓莽
     /// </summary>
     [Range(1f, 200f)]
     public float brushSize = 50f;
     /// <summary>
-    /// 绘制步进精度(值过大会变成点链，过小则有性能压力)
-    /// TODO 改成根据brushSize自动计算
+    /// 禄忙脰脝虏陆陆酶戮芦露脠(脰碌鹿媒麓贸禄谩卤盲鲁脡碌茫脕麓拢卢鹿媒脨隆脭貌脫脨脨脭脛脺脩鹿脕娄)
+    /// TODO 赂脛鲁脡赂霉戮脻brushSize脳脭露炉录脝脣茫
     /// </summary>
     [Range(1f, 20f)]
     public float paintStep = 5f;
     /// <summary>
-    /// 笔刷移动检测阈值
+    /// 卤脢脣垄脪脝露炉录矛虏芒茫脨脰碌
     /// </summary>
     [Range(1f, 10f)]
     public float moveThreshhold = 2f;
     /// <summary>
-    /// 笔刷不透明度
+    /// 卤脢脣垄虏禄脥赂脙梅露脠
     /// </summary>
     [Range(0f, 1f)]
     public float brushAlpha = 1f;
     /// <summary>
-    /// 绘图材质
+    /// 禄忙脥录虏脛脰脢
     /// </summary>
     public Material paintMaterial;
     /// <summary>
-    /// 用来生成直方图数据的shader
+    /// 脫脙脌麓脡煤鲁脡脰卤路陆脥录脢媒戮脻碌脛shader
     /// </summary>
-    public ComputeShader histogramShader;
 
     /// <summary>
-    /// 直方图数据
+    /// 脰卤路陆脥录脢媒戮脻
     /// </summary>
     private uint[]          _histogramData;
     private ComputeBuffer   _histogramBuffer;
@@ -103,7 +102,7 @@ public class ScratchImage : MonoBehaviour
 
 
     /// <summary>
-    /// 重置蒙版
+    /// 脰脴脰脙脙脡掳忙
     /// </summary>
     public void ResetMask()
     {
@@ -113,7 +112,7 @@ public class ScratchImage : MonoBehaviour
     }
 
     /// <summary>
-    /// 获取刮开的统计信息
+    /// 禄帽脠隆鹿脦驴陋碌脛脥鲁录脝脨脜脧垄
     /// </summary>
     /// <returns></returns>
     public StatData GetStatData()
@@ -124,11 +123,9 @@ public class ScratchImage : MonoBehaviour
             return new StatData();
         }
 
-        histogramShader.Dispatch(_clearShaderKrnl, HISTOGRAM_BINS / _histogramShaderGroupSize.x, 1, 1);
 
         int dispatchX = _rt.width / _histogramShaderGroupSize.x;
         int dispatchY = _rt.height / _histogramShaderGroupSize.y;
-        histogramShader.Dispatch(_histogramShaderKrnl, dispatchX, dispatchY, 1);
 
         // AsyncGPUReadback.Request does supported at OpenglES
         _histogramBuffer.GetData(_histogramData);
@@ -138,7 +135,7 @@ public class ScratchImage : MonoBehaviour
         int dispatchCount = dispatchWidth * dispatchHeight;
 
         StatData ret = new StatData();
-        ret.fillPercent = 1.0f - _histogramData[0] / (dispatchCount * 1.0f); // 非0值比例
+        ret.fillPercent = 1.0f - _histogramData[0] / (dispatchCount * 1.0f); // 路脟0脰碌卤脠脌媒
 
         float sum = 0;
         float binScale = (256 / HISTOGRAM_BINS);
@@ -148,7 +145,7 @@ public class ScratchImage : MonoBehaviour
             sum += i * binScale * count;
         }
         ret.avgVal = sum / dispatchCount;
-        // 由于桶的数量小于256，shader最大只统计到 127 * 2 = 254, 无法显示255的数据，因此此处把结果给缩放一下
+        // 脫脡脫脷脥掳碌脛脢媒脕驴脨隆脫脷256拢卢shader脳卯麓贸脰禄脥鲁录脝碌陆 127 * 2 = 254, 脦脼路篓脧脭脢戮255碌脛脢媒戮脻拢卢脪貌麓脣麓脣麓娄掳脩陆谩鹿没赂酶脣玫路脜脪禄脧脗
         ret.avgVal *= 255.0f / ((HISTOGRAM_BINS - 1) * binScale);
         return ret;
     }
@@ -214,7 +211,7 @@ public class ScratchImage : MonoBehaviour
             }
 
             Vector2 tmpPt = _beginPos + dir * offset;
-            tmpPt -= Vector2.one * brushSize * 0.5f; // 将笔刷居中到绘制点
+            tmpPt -= Vector2.one * brushSize * 0.5f; // 陆芦卤脢脣垄戮脫脰脨碌陆禄忙脰脝碌茫
             offset += paintStep;
 
             _arrInstancingMatrixs[instCount++] = Matrix4x4.TRS(new Vector3(tmpPt.x, tmpPt.y, 0), Quaternion.identity, Vector3.one * brushSize);
@@ -276,31 +273,6 @@ public class ScratchImage : MonoBehaviour
 
         // setup histogram compute shader
         _clearShaderKrnl = -1;
-        if (histogramShader != null)
-        {
-            _histogramBuffer = new ComputeBuffer(HISTOGRAM_BINS, 4);
-            _histogramData = new uint[HISTOGRAM_BINS];
-
-            _clearShaderKrnl = histogramShader.FindKernel("HistogramClear");
-            histogramShader.SetBuffer(_clearShaderKrnl, "_HistogramBuffer", _histogramBuffer);
-
-            _histogramShaderKrnl = histogramShader.FindKernel("Histogram");
-            histogramShader.SetTexture(_histogramShaderKrnl, "_Tex", _rt);
-            histogramShader.SetBuffer(_histogramShaderKrnl, "_HistogramBuffer", _histogramBuffer);
-
-            // setup _TexScaledSize
-            {
-                uint x, y, z;
-                histogramShader.GetKernelThreadGroupSizes(_histogramShaderKrnl, out x, out y, out z);
-                uint dispatchWidth = (uint)(_rt.width / x * x);
-                uint dispatchHeight = (uint)(_rt.height / y * y);
-
-                _histogramShaderGroupSize = new Vector2Int((int)x, (int)y);
-
-                // 要求shader执行的宽高小于真实的纹理尺寸，以避免uv溢出
-                histogramShader.SetVector("_TexScaledSize", new Vector2(dispatchWidth, dispatchHeight));
-            }
-        }
     }
 
     private void SetupPaintContext(bool clearRT)
@@ -321,13 +293,13 @@ public class ScratchImage : MonoBehaviour
         if (uiCamera == null)
             return;
 
-        int mouseStatus = 0;// 0：none, 1:down, 2:hold, 3:up
+        int mouseStatus = 0;// 0拢潞none, 1:down, 2:hold, 3:up
 
-        if (Input.GetMouseButtonDown(0)) // 按下鼠标
+        if (Input.GetMouseButtonDown(0)) // 掳麓脧脗脢贸卤锚
             mouseStatus = 1;
-        else if (Input.GetMouseButton(0)) // 移动鼠标或者处于按下状态
+        else if (Input.GetMouseButton(0)) // 脪脝露炉脢贸卤锚禄貌脮脽麓娄脫脷掳麓脧脗脳麓脤卢
             mouseStatus = 2;
-        else if (Input.GetMouseButtonUp(0)) // 释放鼠标
+        else if (Input.GetMouseButtonUp(0)) // 脢脥路脜脢贸卤锚
             mouseStatus = 3;
 
         if (mouseStatus == 0)
